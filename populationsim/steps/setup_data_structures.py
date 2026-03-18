@@ -34,7 +34,7 @@ def read_control_spec(data_filename):
 
     for g in control_spec.geography.unique():
         if g not in geographies:
-            raise RuntimeError("unknown geography column '%s' in control file" % g + " " + str(geographies))
+            raise RuntimeError("unknown geography column '%s' in control file" % g)
 
     return control_spec
 

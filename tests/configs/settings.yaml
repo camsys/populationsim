@@ -31,12 +31,10 @@ input_table_list:
   - tablename: TRACT_control_data
     filename : tract_controls.csv
   - tablename: DISTRICT_control_data
-    filename : district_controls.csv
-  - tablename: REGION_control_data
     filename : region_controls.csv
 
 
-geographies: [REGION, DISTRICT, PUMA, TRACT, TAZ]
+geographies: [DISTRICT, PUMA, TRACT, TAZ]
 seed_geography: PUMA
 
 output_tables:

@@ -1,5 +1,3 @@
-import numpy as np
-import pandas as pd
 from pathlib import Path
 
 from populationsim.core import tracing, inject, pipeline

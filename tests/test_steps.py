@@ -2,6 +2,7 @@ from pathlib import Path
 import pandas as pd
 
 from populationsim.core import tracing, inject, pipeline
+from tests import expected_path
 
 TAZ_COUNT = 36
 TAZ_100_HH_COUNT = 33
@@ -71,9 +72,7 @@ def test_full_run1():
     assert not (output_dir / "households.csv").exists()
     assert (output_dir / "summary_DISTRICT_1.csv").exists()
 
-    expected_hh_ids = pd.read_parquet(
-        Path(__file__).parent / "expected" / "expanded.parquet"
-    )
+    expected_hh_ids = pd.read_parquet(expected_path("expanded"))
 
     # Compare the two dataframes
     assert expanded_household_ids.equals(expected_hh_ids)
@@ -106,9 +105,7 @@ def test_full_run2_repop_replace():
     assert len(taz_hh_counts) == TAZ_COUNT
     assert taz_hh_counts.loc[100] == TAZ_100_HH_REPOP_COUNT
 
-    expected_hh_ids = pd.read_parquet(
-        Path(__file__).parent / "expected" / "expanded_repop_replace.parquet"
-    )
+    expected_hh_ids = pd.read_parquet(expected_path("expanded_repop_replace"))
 
     # Compare the two dataframes
     assert expanded_household_ids.equals(expected_hh_ids)
@@ -137,9 +134,7 @@ def test_full_run2_repop_append():
     assert len(taz_hh_counts) == TAZ_COUNT
     assert taz_hh_counts.loc[100] == TAZ_100_HH_COUNT + TAZ_100_HH_REPOP_COUNT
 
-    expected_hh_ids = pd.read_parquet(
-        Path(__file__).parent / "expected" / "expanded_repop_append.parquet"
-    )
+    expected_hh_ids = pd.read_parquet(expected_path("expanded_repop_append"))
 
     # Compare the two dataframes
     assert expanded_household_ids.equals(expected_hh_ids)

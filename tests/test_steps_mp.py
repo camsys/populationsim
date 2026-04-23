@@ -2,6 +2,7 @@ from pathlib import Path
 import pandas as pd
 
 from populationsim.core import tracing, inject, pipeline, mp_tasks
+from tests import expected_path
 
 TAZ_COUNT = 36
 TAZ_100_HH_COUNT = 33
@@ -47,9 +48,7 @@ def regress():
     assert not (output_dir / "households.csv").exists()
     assert (output_dir / "summary_DISTRICT_1.csv").exists()
 
-    expected_hh_ids = pd.read_parquet(
-        Path(__file__).parent / "expected" / "expanded_mp.parquet"
-    )
+    expected_hh_ids = pd.read_parquet(expected_path("expanded_mp"))
 
     # Compare the two dataframes
     assert expanded_household_ids.equals(expected_hh_ids)

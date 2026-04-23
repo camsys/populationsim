@@ -3,6 +3,7 @@ import pandas as pd
 from pathlib import Path
 
 from populationsim.core import config, tracing, inject, pipeline
+from tests import expected_path
 
 _MODELS = [
     "input_pre_processor",
@@ -101,7 +102,7 @@ def test_full_run_flex(params):
         expected_hh_ids = pd.DataFrame()
     else:
         expected_hh_ids = pd.read_parquet(
-            Path(__file__).parent / "expected" / params["expected_fname"]
+            expected_path(params["expected_fname"].removesuffix(".parquet"))
         )
 
     # Compare the two dataframes

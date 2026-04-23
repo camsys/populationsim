@@ -3,6 +3,7 @@ import pandas as pd
 from pathlib import Path
 
 from populationsim.core import config, tracing, inject, pipeline
+from tests import expected_path
 
 _MODELS = [
     "input_pre_processor",
@@ -28,6 +29,8 @@ def setup_function():
     data_dir = example_dir / "example_test" / "data_flex"
     output_dir = Path(__file__).parent / "output"
 
+    inject.reinject_decorated_tables()
+
     inject.add_injectable("data_dir", data_dir)
     inject.add_injectable("configs_dir", configs_dir)
     inject.add_injectable("output_dir", output_dir)
@@ -43,8 +46,8 @@ def setup_function():
 
 
 def teardown_function():
-    # tables will no longer be available after pipeline is closed
-    pipeline.close_pipeline()
+    if pipeline.is_open():
+        pipeline.close_pipeline()
     inject.clear_cache()
     inject.reinject_decorated_tables()
 
@@ -99,7 +102,7 @@ def test_full_run_flex(params):
         expected_hh_ids = pd.DataFrame()
     else:
         expected_hh_ids = pd.read_parquet(
-            Path(__file__).parent / "expected" / params["expected_fname"]
+            expected_path(params["expected_fname"].removesuffix(".parquet"))
         )
 
     # Compare the two dataframes

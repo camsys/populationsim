@@ -1,11 +1,15 @@
-import numpy as np
-import pandas as pd
 from pathlib import Path
 
 from populationsim.core import tracing, inject, pipeline
 
 
+def setup_function():
+    inject.reinject_decorated_tables()
+
+
 def teardown_function(func):
+    if pipeline.is_open():
+        pipeline.close_pipeline()
     inject.clear_cache()
     inject.reinject_decorated_tables()
 
@@ -41,7 +45,3 @@ def test_intermediate_geography():
     ]
 
     pipeline.run(models=_MODELS, resume_after=None)
-
-    pipeline.close_pipeline()
-
-    inject.clear_cache()

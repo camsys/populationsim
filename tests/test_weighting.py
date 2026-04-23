@@ -3,9 +3,12 @@ import pandas as pd
 from pathlib import Path
 
 from populationsim.core import tracing, inject, pipeline
+from tests import expected_path
 
 
 def teardown_function(func):
+    if pipeline.is_open():
+        pipeline.close_pipeline()
     inject.clear_cache()
     inject.reinject_decorated_tables()
 
@@ -17,6 +20,8 @@ def test_weighting():
     data_dir = example_dir / "data"
     output_dir = Path(__file__).parent / "output"
     expect_dir = Path(__file__).parent / "expected"
+
+    inject.reinject_decorated_tables()
 
     inject.add_injectable("data_dir", data_dir)
     inject.add_injectable("configs_dir", configs_dir)
@@ -47,7 +52,7 @@ def test_weighting():
     # Should be pretty close but not exact.
     assert abs(total_summary_hh_weights - total_seed_households_weights) < 1
 
-    expected_wts = pd.read_parquet(expect_dir / "weights.parquet")
+    expected_wts = pd.read_parquet(expected_path("weights"))
 
     np.allclose(
         summary_hh_weights["SUBREGCluster_balanced_weight"].values,
@@ -56,5 +61,3 @@ def test_weighting():
 
     # tables will no longer be available after pipeline is closed
     pipeline.close_pipeline()
-
-    inject.clear_cache()

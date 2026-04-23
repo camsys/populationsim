@@ -28,6 +28,8 @@ def setup_function():
     data_dir = example_dir / "example_test" / "data_flex"
     output_dir = Path(__file__).parent / "output"
 
+    inject.reinject_decorated_tables()
+
     inject.add_injectable("data_dir", data_dir)
     inject.add_injectable("configs_dir", configs_dir)
     inject.add_injectable("output_dir", output_dir)
@@ -43,8 +45,8 @@ def setup_function():
 
 
 def teardown_function():
-    # tables will no longer be available after pipeline is closed
-    pipeline.close_pipeline()
+    if pipeline.is_open():
+        pipeline.close_pipeline()
     inject.clear_cache()
     inject.reinject_decorated_tables()
 

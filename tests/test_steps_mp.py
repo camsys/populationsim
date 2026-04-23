@@ -16,11 +16,15 @@ def setup_function(func):
     output_dir = Path(__file__).parent / "output"
     data_dir = example_dir / "example_test" / "data"
 
+    inject.reinject_decorated_tables()
+
     inject.add_injectable(
         "configs_dir", [mp_configs_dir, configs_dir, example_configs_dir]
     )
     inject.add_injectable("output_dir", output_dir)
     inject.add_injectable("data_dir", data_dir)
+
+    inject.clear_cache()
 
     tracing.config_logger()
 
@@ -52,6 +56,8 @@ def regress():
 
 
 def teardown_function(func):
+    if pipeline.is_open():
+        pipeline.close_pipeline()
     inject.clear_cache()
     inject.reinject_decorated_tables()
 

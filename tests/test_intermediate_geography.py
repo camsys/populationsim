@@ -3,7 +3,13 @@ from pathlib import Path
 from populationsim.core import tracing, inject, pipeline
 
 
+def setup_function():
+    inject.reinject_decorated_tables()
+
+
 def teardown_function(func):
+    if pipeline.is_open():
+        pipeline.close_pipeline()
     inject.clear_cache()
     inject.reinject_decorated_tables()
 
@@ -14,8 +20,6 @@ def test_intermediate_geography():
     configs_dir = example_dir / "configs_intermediate"
     data_dir = example_dir / "data_intermediate"
     output_dir = Path(__file__).parent / "output"
-
-    inject.reinject_decorated_tables()
 
     inject.add_injectable("data_dir", data_dir)
     inject.add_injectable("configs_dir", configs_dir)
@@ -41,7 +45,3 @@ def test_intermediate_geography():
     ]
 
     pipeline.run(models=_MODELS, resume_after=None)
-
-    pipeline.close_pipeline()
-
-    inject.clear_cache()

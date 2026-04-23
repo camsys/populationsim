@@ -33,6 +33,8 @@ def setup_function():
 
 
 def teardown_function(func):
+    if pipeline.is_open():
+        pipeline.close_pipeline()
     inject.clear_cache()
     inject.reinject_decorated_tables()
 
@@ -79,8 +81,6 @@ def test_full_run1():
     # tables will no longer be available after pipeline is closed
     pipeline.close_pipeline()
 
-    inject.clear_cache()
-
 
 def test_full_run2_repop_replace():
     # Note: tests are run in alphabetical order.
@@ -116,8 +116,6 @@ def test_full_run2_repop_replace():
     # tables will no longer be available after pipeline is closed
     pipeline.close_pipeline()
 
-    inject.clear_cache()
-
 
 def test_full_run2_repop_append():
 
@@ -148,5 +146,3 @@ def test_full_run2_repop_append():
 
     # tables will no longer be available after pipeline is closed
     pipeline.close_pipeline()
-
-    inject.clear_cache()

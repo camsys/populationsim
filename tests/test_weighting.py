@@ -6,6 +6,8 @@ from populationsim.core import tracing, inject, pipeline
 
 
 def teardown_function(func):
+    if pipeline.is_open():
+        pipeline.close_pipeline()
     inject.clear_cache()
     inject.reinject_decorated_tables()
 
@@ -17,6 +19,8 @@ def test_weighting():
     data_dir = example_dir / "data"
     output_dir = Path(__file__).parent / "output"
     expect_dir = Path(__file__).parent / "expected"
+
+    inject.reinject_decorated_tables()
 
     inject.add_injectable("data_dir", data_dir)
     inject.add_injectable("configs_dir", configs_dir)
@@ -56,5 +60,3 @@ def test_weighting():
 
     # tables will no longer be available after pipeline is closed
     pipeline.close_pipeline()
-
-    inject.clear_cache()

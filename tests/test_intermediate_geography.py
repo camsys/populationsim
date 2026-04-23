@@ -15,6 +15,8 @@ def test_intermediate_geography():
     data_dir = example_dir / "data_intermediate"
     output_dir = Path(__file__).parent / "output"
 
+    inject.reinject_decorated_tables()
+
     inject.add_injectable("data_dir", data_dir)
     inject.add_injectable("configs_dir", configs_dir)
     inject.add_injectable("output_dir", output_dir)

@@ -17,6 +17,8 @@ where <platform> is 'win32', 'linux', or 'darwin'.
 import sys
 from pathlib import Path
 
+import pandas as pd
+
 from populationsim.core import config, tracing, inject, pipeline
 
 PLATFORM = sys.platform  # 'win32', 'linux', or 'darwin'

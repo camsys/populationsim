@@ -19,6 +19,7 @@ def test_weighting():
     configs_dir = example_dir / "configs"
     data_dir = example_dir / "data"
     output_dir = Path(__file__).parent / "output"
+    expect_dir = Path(__file__).parent / "expected"
 
     inject.reinject_decorated_tables()
 

@@ -8,11 +8,6 @@ TAZ_COUNT = 36
 TAZ_100_HH_COUNT = 33
 TAZ_100_HH_REPOP_COUNT = 26
 
-def assert_df_same_rows(a: pd.DataFrame, b: pd.DataFrame, sort_cols):
-    a2 = a.sort_values(sort_cols).reset_index(drop=True)
-    b2 = b.sort_values(sort_cols).reset_index(drop=True)
-    pd.testing.assert_frame_equal(a2, b2, check_dtype=False)
-
 
 def setup_function():
 
@@ -80,7 +75,7 @@ def test_full_run1():
     expected_hh_ids = pd.read_parquet(expected_path("expanded"))
 
     # Compare the two dataframes
-    assert_df_same_rows(expanded_household_ids, expected_hh_ids, ["PUMA", "TRACT", "TAZ", "hh_id"])
+    assert expanded_household_ids.equals(expected_hh_ids)
 
     # tables will no longer be available after pipeline is closed
     pipeline.close_pipeline()
@@ -113,7 +108,7 @@ def test_full_run2_repop_replace():
     expected_hh_ids = pd.read_parquet(expected_path("expanded_repop_replace"))
 
     # Compare the two dataframes
-    assert_df_same_rows(expanded_household_ids, expected_hh_ids, ["PUMA", "TRACT", "TAZ", "hh_id"])
+    assert expanded_household_ids.equals(expected_hh_ids)
 
     # tables will no longer be available after pipeline is closed
     pipeline.close_pipeline()
@@ -142,7 +137,7 @@ def test_full_run2_repop_append():
     expected_hh_ids = pd.read_parquet(expected_path("expanded_repop_append"))
 
     # Compare the two dataframes
-    assert_df_same_rows(expanded_household_ids, expected_hh_ids, ["PUMA", "TRACT", "TAZ", "hh_id"])
+    assert expanded_household_ids.equals(expected_hh_ids)
 
     # tables will no longer be available after pipeline is closed
     pipeline.close_pipeline()

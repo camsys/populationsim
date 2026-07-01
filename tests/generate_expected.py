@@ -17,7 +17,6 @@ Output files are written to tests/expected/ with the naming convention:
 
 from pathlib import Path
 
-
 from populationsim.core import config, tracing, inject, pipeline
 
 TESTS_DIR = Path(__file__).parent

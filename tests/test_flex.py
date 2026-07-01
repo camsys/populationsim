@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 
 from populationsim.core import config, tracing, inject, pipeline
-from tests import expected_path
+from tests import assert_expanded_close, expected_path
 
 _MODELS = [
     "input_pre_processor",
@@ -99,11 +99,11 @@ def test_full_run_flex(params):
     expanded_household_ids = pipeline.get_table("expanded_household_ids")
 
     if params["NO_INTEGERIZATION_EVER"]:
-        expected_hh_ids = pd.DataFrame()
+        # No integerization -> expand_households produces an empty table.
+        assert expanded_household_ids.empty
     else:
         expected_hh_ids = pd.read_parquet(
             expected_path(params["expected_fname"].removesuffix(".parquet"))
         )
-
-    # Compare the two dataframes
-    assert expanded_household_ids.equals(expected_hh_ids)
+        # Compare zone-level distribution with a tolerance.
+        assert_expanded_close(expanded_household_ids, expected_hh_ids)

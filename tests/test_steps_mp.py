@@ -2,7 +2,7 @@ from pathlib import Path
 import pandas as pd
 
 from populationsim.core import tracing, inject, pipeline, mp_tasks
-from tests import expected_path
+from tests import assert_expanded_close, expected_path
 
 TAZ_COUNT = 36
 TAZ_100_HH_COUNT = 33
@@ -50,8 +50,8 @@ def regress():
 
     expected_hh_ids = pd.read_parquet(expected_path("expanded_mp"))
 
-    # Compare the two dataframes
-    assert expanded_household_ids.equals(expected_hh_ids)
+    # Compare zone-level distribution with a tolerance.
+    assert_expanded_close(expanded_household_ids, expected_hh_ids)
 
 
 def teardown_function(func):

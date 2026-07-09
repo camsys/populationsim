@@ -53,9 +53,11 @@ def test_weighting():
 
     expected_wts = pd.read_parquet(expected_path("weights"))
 
-    np.allclose(
+    assert np.allclose(
         summary_hh_weights["SUBREGCluster_balanced_weight"].values,
         expected_wts["SUBREGCluster_balanced_weight"].values,
+        rtol=1e-3,
+        atol=1e-3,
     )
 
     # tables will no longer be available after pipeline is closed

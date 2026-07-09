@@ -1,28 +1,26 @@
 """
-Generate platform-specific expected parquet files for regression tests.
+Generate the reference expected parquet files for regression tests.
 
-MILP solver results vary across platforms (Windows/Linux/macOS) due to
-differences in floating-point behavior and compiled CBC binaries. This script
-runs the pipeline and saves expected outputs with a platform suffix.
+MILP solver results vary across platforms (Windows/Linux/macOS) and even OS
+versions due to differences in floating-point behavior and compiled CBC/GLPK
+binaries. Rather than committing a bit-exact golden per platform, the tests
+compare the zone-level household distribution against a single reference set
+with a tolerance (see ``tests.assert_expanded_close``). Generate that reference
+set on the CI platform (Linux) and commit it.
 
 Usage:
     python tests/generate_expected.py
 
 Output files are written to tests/expected/ with the naming convention:
-    <name>_<platform>.parquet
-
-where <platform> is 'win32', 'linux', or 'darwin'.
+    <name>.parquet
 """
 
-import sys
 from pathlib import Path
 
 from populationsim.core import config, tracing, inject, pipeline
 
-PLATFORM = sys.platform  # 'win32', 'linux', or 'darwin'
-
 TESTS_DIR = Path(__file__).parent
-EXPECTED_DIR = TESTS_DIR / "expected" / PLATFORM
+EXPECTED_DIR = TESTS_DIR / "expected"
 EXAMPLE_DIR = TESTS_DIR.parent / "examples"
 
 
@@ -39,7 +37,7 @@ def save_expected(df, name):
     EXPECTED_DIR.mkdir(parents=True, exist_ok=True)
     path = EXPECTED_DIR / f"{name}.parquet"
     df.to_parquet(path)
-    print(f"  {PLATFORM}/{name}.parquet: {df.shape}")
+    print(f"  {name}.parquet: {df.shape}")
 
 
 def generate_test_steps():
@@ -199,7 +197,6 @@ def generate_test_weighting():
 
 
 if __name__ == "__main__":
-    print(f"Generating expected files for platform: {PLATFORM}")
     print(f"Output directory: {EXPECTED_DIR}")
     EXPECTED_DIR.mkdir(parents=True, exist_ok=True)
     print()
@@ -209,4 +206,4 @@ if __name__ == "__main__":
     generate_test_steps_mp()
     generate_test_weighting()
 
-    print(f"\nDone! All expected files generated for '{PLATFORM}'.")
+    print("\nDone! All expected files generated.")
